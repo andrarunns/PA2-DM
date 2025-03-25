@@ -1,5 +1,7 @@
 import sys
 
+# Set up metod used to read file to set up and return the following 
+# Board, Algorithm, and define the next player
 def set_up(file_name):
     board = []
     for i in range(6):
@@ -17,6 +19,12 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
+
+def uniform_random(board, next player):
+    #find legal moves
+    #choose one at random
+    #return it
+    pass
 
 # Defining main function
 def main():
@@ -45,6 +53,9 @@ def main():
         print("With UR algorithm must have 0 as the last parameter")
         print()
         sys.exit()
+    
+    if algorithm == "UR":
+        uniform_random(board, next_player)
 
 
 # Using the special variable 
