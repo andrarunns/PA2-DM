@@ -43,6 +43,7 @@ def main():
     n = len(sys.argv)
     if n != 4:
         print("Incorrect number of arguments passed")
+        print("Expected 4 arguments but got ", n)
         print("1. Text file name")
         print("2. Algorithm output (Verbose, Brief, None)")
         print("3. # of simulations to run")
