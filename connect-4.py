@@ -1,3 +1,4 @@
+import random
 import sys
 
 # Set up metod used to read file to set up and return the following 
@@ -19,13 +20,24 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
+#get_legal_moves used to find legal moves by checking the top row
+#if we have an empty space, that means we can place a piece there
+def get_legal_moves(board):
+    moves = []
+    for col in range(7):
+        if board[0][col] == 'O':
+            moves.append(col + 1)
+    return moves
 
-def uniform_random(board, next player):
+#uniform_random used to find the legal moves and return a uniform random strategy
+#all legal moves should be selected with the same probability
+def uniform_random(board):
     #find legal moves
+    moves = get_legal_moves(board)
     #choose one at random
     #return it
-    pass
-
+    return random.choice(moves)
+    
 # Defining main function
 def main():
     n = len(sys.argv)
@@ -39,7 +51,8 @@ def main():
    
     file_to_read = sys.argv[1]
     description = sys.argv[2]
-    iterations = sys.argv[3]
+    #iterations = sys.argv[3]
+    iterations = int(sys.argv[3])
 
     valid_description = ['Verbose', 'Brief', 'None']
 
@@ -55,7 +68,7 @@ def main():
         sys.exit()
     
     if algorithm == "UR":
-        uniform_random(board, next_player)
+         print(f"FINAL Move selected: {uniform_random(board)}")
 
 
 # Using the special variable 
