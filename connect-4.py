@@ -37,6 +37,106 @@ def uniform_random(board):
     #choose one at random
     #return it
     return random.choice(moves)
+
+def apply_move(board, colum, player):
+    #creo necesitamos una copy del tablero
+    row = 5  
+    while row >= 0:
+        if board[row][colum] == 'O':  
+            board[row][colum] = player  
+            break  
+        row -= 1 
+    
+    return board
+
+def simulate_random_playout(board, player):
+    current_player = player
+    while True:
+        moves = get_legal_moves(board)
+        if not moves: 
+            return 0
+        move = random.choice(moves)  
+        board = apply_move(board, move - 1, current_player)  
+        
+        if check_win(board, current_player):
+            if current_player == player:
+                return 1
+            else:
+                return -1  
+        
+        if current_player == 'R':
+            current_player = 'Y'
+        else:
+            current_player = 'R'
+
+
+def check_win(board, player):
+    #horizontal
+    for row in range(6):
+        for col in range(4):
+            win = True
+            for i in range(4):
+                if board[row][col + i] != player:
+                    win = False
+                    break
+            if win:
+                return True
+
+    #vertical check
+    for col in range(7):
+        for row in range(3):
+            win = True
+            for i in range(4):
+                if board[row + i][col] != player:
+                    win = False
+                    break
+            if win:
+                return True
+
+    #giagonal
+    for row in range(3):
+        for col in range(4):
+            win = True
+            for i in range(4):
+                if board[row + i][col + i] != player:
+                    win = False
+                    break
+            if win:
+                return True
+
+    #diagonal (otra)
+    for row in range(3, 6):
+        for col in range(4):
+            win = True
+            for i in range(4):
+                if board[row - i][col + i] != player:
+                    win = False
+                    break
+            if win:
+                return True
+
+    return False
+
+def pure_monte_carlo_game_search(board, rollouts, verbose, next_player):
+    legal_moves = get_legal_moves(board)
+
+    for i in range(rollouts):
+        move = random.choice(legal_moves)
+
+        #apply move
+        update_move = apply_move(board, move - 1, next_player)
+
+        #simulate the game
+        game = simulate_random_playout(update_move, next_player)
+
+
+        if verbose:
+          
+            print("wi: ")
+            print("ni: ", )
+            print("----")
+
+    pass
     
 # Defining main function
 def main():
