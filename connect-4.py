@@ -1,108 +1,130 @@
 import random
 import sys
 
-# Set up metod used to read file to set up and return the following 
-# Board, Algorithm, and define the next player
-def set_up(file_name):
-    board = []
-    for i in range(6):
-        row = []
-        for x in range(7):
-            row.append('O')
-        board.append(row)
+class Game:
+    # Set up metod used to read file to set up and return the following 
+    # Board, Algorithm, and define the next player
+    def set_up(self, file_name):
+        board = []
+        for i in range(6):
+            row = []
+            for x in range(7):
+                row.append('O')
+            board.append(row)
 
-    with open(file_name, "r") as file:
-        algorithm = file.readline().strip()
-        next_player = file.readline().strip()
+        with open(file_name, "r") as file:
+            algorithm = file.readline().strip()
+            next_player = file.readline().strip()
 
-        for row in range(6):
-            board[row] = list(file.readline().strip())
-    
-    return algorithm, board, next_player
+            for row in range(6):
+                board[row] = list(file.readline().strip())
+        
+        return algorithm, board, next_player
 
-#get_legal_moves used to find legal moves by checking the top row
-#if we have an empty space, that means we can place a piece there
-def get_legal_moves(board):
-    moves = []
-    for col in range(7):
-        if board[0][col] == 'O':
-            moves.append(col + 1)
-    return moves
-
-#uniform_random used to find the legal moves and return a uniform random strategy
-#all legal moves should be selected with the same probability
-def uniform_random(board):
-    #find legal moves
-    moves = get_legal_moves(board)
-    #choose one at random
-    #return it
-    return random.choice(moves)
-
-def check_winner(board):
-
-    # check for horizontal wins 
-    for row in range(6):
-        for col in range(4): # boundry 
-            curr_line = []
-            curr_player = board[row][col]
-            #check that a player occupies current spot
-            if curr_player != "O":
-                for i in range(4):
-                    curr_line.append(board[row][col+i])
-                
-                #check if next 4 consecutive spaces are the same
-                if curr_line == [curr_player] * 4:
-                    return -1 if curr_player == "R" else 1
-
-# check for vertical wins 
-    for row in range(3):# boundry 
-        for col in range(7): 
-            curr_line = []
-            curr_player = board[row][col]
-            #check that a player occupies current spot
-            if curr_player != "O":
-                for i in range(4):
-                    curr_line.append(board[row+1][col])
-                
-                #check if next 4 consecutive spaces are the same
-                if curr_line == [curr_player] * 4:
-                    return -1 if curr_player == "R" else 1
-
-# check for diagonal bottom left to top right
-    for row in range(3, 6):
-        for col in range(4):
-            if board[row][col] != "O":
-                curr_line = []
-                for i in range(4):
-                    curr_line.append(board[row-i][col+i])
-                
-                if curr_line == ["R"] * 4:
-                    return -1
-                elif curr_line == ["Y"] * 4:
-                    return 1
-
-
-# check for diagonal top left to bottom right
-    for row in range(3):
-        for col in range(4):
-            if board[row][col] != "O":
-                curr_line = []
-                for i in range(4):
-                    curr_line.append(board[row+i][col-i])
-                
-                if curr_line == ["R"] * 4:
-                    return -1
-                elif curr_line == ["Y"] * 4:
-                    return 1
-    
-    #check if there are empty spaces (game can still play)
-    for row in range(6):
+    #get_legal_moves used to find legal moves by checking the top row
+    #if we have an empty space, that means we can place a piece there
+    def get_legal_moves(self, board):
+        moves = []
         for col in range(7):
-            if board[row][col] == "O":
-                return None
-    
-    # if all spaces are filled = draw
-    return 0
+            if board[0][col] == 'O':
+                moves.append(col + 1)
+        return moves
+
+    #uniform_random used to find the legal moves and return a uniform random strategy
+    #all legal moves should be selected with the same probability
+    def uniform_random(seft, board):
+        #find legal moves
+        moves = seft.get_legal_moves(board)
+        #choose one at random
+        #return it
+        return random.choice(moves)
+
+    def check_winner(self, board):
+
+        # check for horizontal wins 
+        for row in range(6):
+            for col in range(4): # boundry 
+                curr_line = []
+                curr_player = board[row][col]
+                #check that a player occupies current spot
+                if curr_player != "O":
+                    for i in range(4):
+                        curr_line.append(board[row][col+i])
+                    
+                    #check if next 4 consecutive spaces are the same
+                    if curr_line == [curr_player] * 4:
+                        return -1 if curr_player == "R" else 1
+
+    # check for vertical wins 
+        for row in range(3):# boundry 
+            for col in range(7): 
+                curr_line = []
+                curr_player = board[row][col]
+                #check that a player occupies current spot
+                if curr_player != "O":
+                    for i in range(4):
+                        curr_line.append(board[row+1][col])
+                    
+                    #check if next 4 consecutive spaces are the same
+                    if curr_line == [curr_player] * 4:
+                        return -1 if curr_player == "R" else 1
+
+    # check for diagonal bottom left to top right
+        for row in range(3, 6):
+            for col in range(4):
+                if board[row][col] != "O":
+                    curr_line = []
+                    for i in range(4):
+                        curr_line.append(board[row-i][col+i])
+                    
+                    if curr_line == ["R"] * 4:
+                        return -1
+                    elif curr_line == ["Y"] * 4:
+                        return 1
+
+
+    # check for diagonal top left to bottom right
+        for row in range(3):
+            for col in range(4):
+                if board[row][col] != "O":
+                    curr_line = []
+                    for i in range(4):
+                        curr_line.append(board[row+i][col-i])
+                    
+                    if curr_line == ["R"] * 4:
+                        return -1
+                    elif curr_line == ["Y"] * 4:
+                        return 1
+        
+        #check if there are empty spaces (game can still play)
+        for row in range(6):
+            for col in range(7):
+                if board[row][col] == "O":
+                    return None
+        
+        # if all spaces are filled = draw
+        return 0
+
+    def apply_move(seft,board, colum, player):
+        #creo necesitamos una copy del tablero
+        row = 5  
+        while row >= 0:
+            if board[row][colum] == 'O':  
+                board[row][colum] = player  
+                break  
+            row -= 1 
+        
+        return board
+
+class Node:
+    def __init__ (self, parent, move):
+        self.parent = parent
+        self.move = move
+        self.children = {}
+        self.wi = 0 
+        self.ni = 0 
+
+
 
     
 # Defining main function
