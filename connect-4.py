@@ -2,25 +2,10 @@ import random
 import sys
 
 class Game:
-    # Set up metod used to read file to set up and return the following 
-    # Board, Algorithm, and define the next player
-    def set_up(self, file_name):
-        board = []
-        for i in range(6):
-            row = []
-            for x in range(7):
-                row.append('O')
-            board.append(row)
-
-        with open(file_name, "r") as file:
-            algorithm = file.readline().strip()
-            next_player = file.readline().strip()
-
-            for row in range(6):
-                board[row] = list(file.readline().strip())
-        
-        return algorithm, board, next_player
-
+    def __init__(self, board, player):
+        self.board = board
+        self.current_player = player
+    
     #get_legal_moves used to find legal moves by checking the top row
     #if we have an empty space, that means we can place a piece there
     def get_legal_moves(self, board):
@@ -30,14 +15,26 @@ class Game:
                 moves.append(col + 1)
         return moves
 
-    #uniform_random used to find the legal moves and return a uniform random strategy
-    #all legal moves should be selected with the same probability
-    def uniform_random(seft, board):
-        #find legal moves
-        moves = seft.get_legal_moves(board)
-        #choose one at random
-        #return it
-        return random.choice(moves)
+    
+    def apply_move(seft,board, colum, player):
+        #creo necesitamos una copy del tablero
+        row = 5  
+        while row >= 0:
+            if board[row][colum] == 'O':  
+                board[row][colum] = player  
+                break  
+            row -= 1 
+        
+        return board
+
+    # #uniform_random used to find the legal moves and return a uniform random strategy
+    # #all legal moves should be selected with the same probability
+    # def uniform_random(seft, board):
+    #     #find legal moves
+    #     moves = seft.get_legal_moves(board)
+    #     #choose one at random
+    #     #return it
+    #     return random.choice(moves)
 
     def check_winner(self, board):
 
@@ -105,17 +102,6 @@ class Game:
         # if all spaces are filled = draw
         return 0
 
-    def apply_move(seft,board, colum, player):
-        #creo necesitamos una copy del tablero
-        row = 5  
-        while row >= 0:
-            if board[row][colum] == 'O':  
-                board[row][colum] = player  
-                break  
-            row -= 1 
-        
-        return board
-
 class Node:
     def __init__ (self, parent, move):
         self.parent = parent
@@ -124,9 +110,36 @@ class Node:
         self.wi = 0 
         self.ni = 0 
 
+def pmcgs(board, next_player, rollouts, verbose=False):
+    game = Game(board, next_player)
+    root = Node()
+
+    for i in range(rollouts):
+        pass
 
 
+    pass
+
+
+# Set up metod used to read file to set up and return the following 
+# Board, Algorithm, and define the next player
+def set_up(self, file_name):
+    board = []
+    for i in range(6):
+        row = []
+        for x in range(7):
+            row.append('O')
+        board.append(row)
+
+    with open(file_name, "r") as file:
+        algorithm = file.readline().strip()
+        next_player = file.readline().strip()
+
+        for row in range(6):
+            board[row] = list(file.readline().strip())
     
+    return algorithm, board, next_player
+
 # Defining main function
 def main():
     n = len(sys.argv)
@@ -156,8 +169,8 @@ def main():
         print()
         sys.exit()
     
-    if algorithm == "UR":
-         print(f"FINAL Move selected: {uniform_random(board)}")
+    # if algorithm == "UR":
+    #      print(f"FINAL Move selected: {uniform_random(board)}")
 
 
 # Using the special variable 
