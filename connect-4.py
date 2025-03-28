@@ -110,7 +110,7 @@ class Node:
         self.wi = 0 
         self.ni = 0 
 
-def pmcgs(board, next_player, rollouts, verbose=False):
+def pmcgs(board, next_player, rollouts, verbose):
     game = Game(board, next_player)
     root = Node()
 
@@ -164,10 +164,15 @@ def main():
         sys.exit()
     
     algorithm, board, next_player = set_up(file_to_read)
-    if algorithm == "UR" and iterations !=0:
-        print("With UR algorithm must have 0 as the last parameter")
-        print()
-        sys.exit()
+    #cambiaremos esto
+    rollouts = 0
+    verbose = False
+    pmcgs(board, next_player,rollouts,verbose)
+
+    # if algorithm == "UR" and iterations !=0:
+    #     print("With UR algorithm must have 0 as the last parameter")
+    #     print()
+    #     sys.exit()
     
     # if algorithm == "UR":
     #      print(f"FINAL Move selected: {uniform_random(board)}")
