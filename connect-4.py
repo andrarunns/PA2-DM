@@ -17,9 +17,9 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
-
-# Defining main function
-def main():
+# Using the special variable 
+# __name__
+if __name__=="__main__":
     n = len(sys.argv)
     if n != 4:
         print("Incorrect number of arguments passed")
@@ -41,13 +41,8 @@ def main():
         sys.exit()
     
     algorithm, board, next_player = set_up(file_to_read)
-    if algorithm == "UR" and iterations !=0:
+
+    if algorithm == "UR" and int(iterations) != 0:
         print("With UR algorithm must have 0 as the last parameter")
         print()
         sys.exit()
-
-
-# Using the special variable 
-# __name__
-if __name__=="__main__":
-    main()
