@@ -17,9 +17,7 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
-# Using the special variable 
-# __name__
-if __name__=="__main__":
+def main():
     n = len(sys.argv)
     if n != 4:
         print("Incorrect number of arguments passed")
@@ -46,3 +44,8 @@ if __name__=="__main__":
         print("With UR algorithm must have 0 as the last parameter")
         print()
         sys.exit()
+
+# Using the special variable 
+# __name__
+if __name__=="__main__":
+    main()
