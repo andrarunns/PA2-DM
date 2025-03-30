@@ -50,8 +50,19 @@ def main():
 
     if algorithm == "UR":
         ur = UniformRandom()
-        print(f"FINAL Move selected: {ur.make_move(board)}")
+        print(f"FINAL Move selected: {ur.next_move(board)}")
         pass
+
+    elif algorithm == "PMCGS":
+        gm = GameManager(board)  
+        pmcgs = PMCGS()  
+        move = pmcgs.next_move(gm.board, next_player, rollouts=int(iterations)) 
+        print(f"FINAL Move selected by PMCGS: {move}")
+
+        gm.apply_move(move, next_player)
+        print("Updated Board After Move:")
+        for row in gm.board:
+            print(" ".join(row))
 
 # Using the special variable 
 # __name__

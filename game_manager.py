@@ -14,7 +14,11 @@ class GameManager():
         
         return self.board
 
-    def check_winner(self):
+    def check_winner(self, board = None):
+
+        # Use self.board if board is None
+        if board is None:
+            board = self.board
 
         # check for horizontal wins 
         for row in range(6):

@@ -15,7 +15,7 @@ class UniformRandom:
 
     #uniform_random used to find the legal moves and return a uniform random strategy
     #all legal moves should be selected with the same probability
-    def make_move(self, board):
+    def next_move(self, board):
         #find legal moves
         moves = self.get_legal_moves(board)
         #choose one at random
