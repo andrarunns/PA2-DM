@@ -1,7 +1,13 @@
+# The work below was implemented by
+# Andrea Villagomez
+# Emilio Rojero
+# Arturo Flores
+
 import sys
 from uniform_random import UniformRandom
 from game_manager import GameManager
 from pmcgs import PMCGS
+# from uct import UCT
 
 def set_up(file_name):
     board = []
@@ -51,7 +57,6 @@ def main():
         print(f"FINAL Move selected: {ur.next_move(board)}")
 
     elif algorithm == "PMCGS":
-        # Enable verbose mode based on description
         pmcgs = PMCGS(verbose=(description == "Verbose"))
 
         print("\nRunning PMCGS with:")

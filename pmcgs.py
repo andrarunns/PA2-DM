@@ -3,14 +3,21 @@ from game_manager import GameManager
 
 class Node:
     """MCTS Node to track wins, visits, and child nodes."""
-    def __init__(self, parent, move):
+    def __init__(self, parent=None, move=None):
         self.parent = parent
         self.move = move
         self.children = {}
         self.wi = 0      # Wins
         self.ni = 0      # Number of visits
         self.qi = 0      # Value estimate (wi / ni)
-        self.uct = 0     # Upper confidence bound
+
+    def add_child(self, move):
+        """Adds a child node if it doesn't exist."""
+        if move not in self.children:
+            self.children[move] = Node(self, move)
+            print("NODE ADDED")
+        return self.children[move]
+
 
 class PMCGS:
     def __init__(self, verbose=False):
@@ -31,7 +38,7 @@ class PMCGS:
 
     def get_legal_moves(self, board):
         """Returns a list of legal moves (columns)."""
-        return [col for col in range(7) if board[0][col] == 'O']
+        return [col for col in range(7) if board[0][col] == "O"]
 
     def random_playout(self, board, player):
         """Simulates a random playout using apply/undo moves."""
@@ -42,6 +49,7 @@ class PMCGS:
         while True:
             moves = self.get_legal_moves(board)
             if not moves:
+                print("Terminal node value: 0")
                 return 0  # Draw
 
             move = random.choice(moves)
@@ -57,20 +65,26 @@ class PMCGS:
                 for r, c in reversed(move_history):
                     self.undo_move(board, r, c)
 
-                if winner == player:
-                    return 1
-                elif winner != 'O':
-                    return -1
-                else:
-                    return 0
+                value = 1 if winner == player else -1
+                print(f"Terminal node value: {value}")
+                return value
 
             current_player = 'Y' if current_player == 'R' else 'R'
 
     def next_move(self, board, player, rollouts=500):
-        """Selects the next move using MCTS with in-place move handling."""
+        """Selects the next move using PMCGS with in-place move handling."""
         
+        if self.root is None:
+            self.root = Node()
+
         legal_moves = self.get_legal_moves(board)
-        move_scores = {move: Node(None, move) for move in legal_moves}
+        move_scores = {}
+
+        # Use the actual tree nodes
+        for move in legal_moves:
+            if move not in self.root.children:
+                self.root.add_child(move)  
+            move_scores[move] = self.root.children[move]  # ✅ Use the existing node
 
         # MCTS Rollouts
         for move in legal_moves:
@@ -88,6 +102,7 @@ class PMCGS:
                 move_scores[move].wi += result
                 move_scores[move].ni += 1
                 move_scores[move].qi = move_scores[move].wi / move_scores[move].ni  # Average value
+
                 if self.verbose:
                     print(f"Updated values for move {move}:")
                     print(f"wi: {move_scores[move].wi}")
