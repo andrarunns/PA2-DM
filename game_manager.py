@@ -1,85 +1,62 @@
-class GameManager():
+class GameManager:
     def __init__(self, board):
         self.board = board
-        pass
 
     def apply_move(self, column, player):
-        #creo necesitamos una copy del tablero
         row = 5  
         while row >= 0:
             if self.board[row][column] == 'O':  
                 self.board[row][column] = player  
                 break  
             row -= 1 
-        
         return self.board
 
-    def check_winner(self, board = None):
-
+    def check_winner(self, board=None):
         # Use self.board if board is None
         if board is None:
             board = self.board
 
-        # check for horizontal wins 
+        # Check for horizontal wins 
         for row in range(6):
-            for col in range(4): # boundry 
-                curr_line = []
+            for col in range(4):  # Boundaries
                 curr_player = self.board[row][col]
-                #check that a player occupies current spot
-                if curr_player != "O":
-                    for i in range(4):
-                        curr_line.append(self.board[row][col+i])
-                    
-                    #check if next 4 consecutive spaces are the same
-                    if curr_line == [curr_player] * 4:
-                        return -1 if curr_player == "R" else 1
+                if curr_player != "O":  # Check that a player occupies current spot
+                    # Check if next 4 consecutive spaces are the same
+                    if self.board[row][col] == self.board[row][col+1] == self.board[row][col+2] == self.board[row][col+3]:
+                        return "R" if curr_player == "R" else "Y"
 
-        # check for vertical wins 
-            for row in range(3):# boundry 
-                for col in range(7): 
-                    curr_line = []
+        # Check for vertical wins
+        for row in range(3):  # Boundaries
+            for col in range(7):
+                curr_player = self.board[row][col]
+                if curr_player != "O":  # Check that a player occupies current spot
+                    # Check if next 4 consecutive spaces are the same
+                    if self.board[row][col] == self.board[row+1][col] == self.board[row+2][col] == self.board[row+3][col]:
+                        return "R" if curr_player == "R" else "Y"
+
+        # Check for diagonal bottom left to top right
+        for row in range(3, 6):
+            for col in range(4):
+                if self.board[row][col] != "O":
                     curr_player = self.board[row][col]
-                    #check that a player occupies current spot
-                    if curr_player != "O":
-                        for i in range(4):
-                            curr_line.append(self.board[row+1][col])
-                        
-                        #check if next 4 consecutive spaces are the same
-                        if curr_line == [curr_player] * 4:
-                            return -1 if curr_player == "R" else 1
+                    # Check diagonal from bottom-left to top-right
+                    if self.board[row][col] == self.board[row-1][col+1] == self.board[row-2][col+2] == self.board[row-3][col+3]:
+                        return "R" if curr_player == "R" else "Y"
 
-        # check for diagonal bottom left to top right
-            for row in range(3, 6):
-                for col in range(4):
-                    if self.board[row][col] != "O":
-                        curr_line = []
-                        for i in range(4):
-                            curr_line.append(self.board[row-i][col+i])
-                        
-                        if curr_line == ["R"] * 4:
-                            return -1
-                        elif curr_line == ["Y"] * 4:
-                            return 1
+        # Check for diagonal top left to bottom right
+        for row in range(3):
+            for col in range(4):
+                if self.board[row][col] != "O":
+                    curr_player = self.board[row][col]
+                    # Check diagonal from top-left to bottom-right
+                    if self.board[row][col] == self.board[row+1][col+1] == self.board[row+2][col+2] == self.board[row+3][col+3]:
+                        return "R" if curr_player == "R" else "Y"
 
+        # Check if there are empty spaces (game can still play)
+        for row in range(6):
+            for col in range(7):
+                if self.board[row][col] == "O":
+                    return None  # No winner yet, the game is still ongoing
 
-        # check for diagonal top left to bottom right
-            for row in range(3):
-                for col in range(4):
-                    if self.board[row][col] != "O":
-                        curr_line = []
-                        for i in range(4):
-                            curr_line.append(self.board[row+i][col-i])
-                        
-                        if curr_line == ["R"] * 4:
-                            return -1
-                        elif curr_line == ["Y"] * 4:
-                            return 1
-            
-            #check if there are empty spaces (game can still play)
-            for row in range(6):
-                for col in range(7):
-                    if self.board[row][col] == "O":
-                        return None
-            
-            # if all spaces are filled = draw
-            return 0
+        # If all spaces are filled, it's a draw
+        return 0

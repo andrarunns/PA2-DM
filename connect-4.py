@@ -7,6 +7,7 @@ import sys
 from uniform_random import UniformRandom
 from game_manager import GameManager
 from pmcgs import PMCGS
+from simulator import Simulator
 
 
 def set_up(file_name):
@@ -81,7 +82,10 @@ def main():
         for row in board:
             print(" ".join(row))
 
+def main2():
+    game1 = Simulator()
+    game1.game_simulation("UR", "UR", 0, 0)
 # Using the special variable 
 # __name__
 if __name__ == "__main__":
-    main()
+    main2()
