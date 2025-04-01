@@ -1,4 +1,5 @@
 import random
+import math
 from game_manager import GameManager
 
 class Node:
@@ -10,6 +11,7 @@ class Node:
         self.wi = 0      # Wins
         self.ni = 0      # Number of visits
         self.qi = 0      # Value estimate (wi / ni)
+        self.ucb = 0     # UCB value
 
     def add_child(self, move):
         """Adds a child node if it doesn't exist."""
@@ -49,7 +51,7 @@ class PMCGS:
         while True:
             moves = self.get_legal_moves(board)
             if not moves:
-                print("Terminal node value: 0")
+                print("TERMINAL NODE VALUE: 0")
                 return 0  # Draw
 
             move = random.choice(moves)
@@ -66,54 +68,89 @@ class PMCGS:
                     self.undo_move(board, r, c)
 
                 value = 1 if winner == player else -1
-                print(f"Terminal node value: {value}")
+                print(f"TERMINAL NODE VALUE: {value}")
                 return value
 
             current_player = 'Y' if current_player == 'R' else 'R'
 
-    def next_move(self, board, player, rollouts=500):
-        """Selects the next move using PMCGS with in-place move handling."""
-        
+    def uct_select(self, node, exploration_factor=math.sqrt(2)):
+        """Selects a child node using UCT."""
+        total_visits = sum(child.ni for child in node.children.values()) + 1
+
+        best_ucb = float('-inf')
+        best_move = None
+
+        for move, child in node.children.items():
+            if child.ni == 0:
+                ucb_value = float('inf')
+            else:
+                ucb_value = (child.wi / child.ni) + exploration_factor * math.sqrt(math.log(total_visits) / child.ni)
+
+            child.ucb = ucb_value
+
+            if self.verbose:
+                print(f"UCB value for move {move + 1}: {ucb_value:.4f}")
+
+            if ucb_value > best_ucb:
+                best_ucb = ucb_value
+                best_move = move
+
+        return node.children[best_move]
+
+    def next_move(self, board, player, rollouts=500, use_uct=False):
+        """Single next_move method for both PMCGS and UCT."""
+
+        # Initialize the root node
         if self.root is None:
             self.root = Node()
 
         legal_moves = self.get_legal_moves(board)
-        move_scores = {}
 
-        # Use the actual tree nodes
+        # Expand the tree with child nodes if not already present
         for move in legal_moves:
             if move not in self.root.children:
-                self.root.add_child(move)  
-            move_scores[move] = self.root.children[move]  # ✅ Use the existing node
+                self.root.add_child(move)
 
         # MCTS Rollouts
-        for move in legal_moves:
-            for _ in range(rollouts):
-                # Apply the move
-                row = self.apply_move(board, move, player)
+        for _ in range(rollouts):
+            current_node = self.root
+            current_player = player
 
-                # Simulate the random playout
-                result = self.random_playout(board, 'Y' if player == 'R' else 'R')
+            # Tree search and expansion
+            while current_node and current_node.children:
+                if use_uct:
+                    current_node = self.uct_select(current_node)
+                else:
+                    current_node = random.choice(list(current_node.children.values()))
 
-                # Undo the applied move
+                # Ensure the node is valid
+                if current_node is None:
+                    break
+
+                move = current_node.move
+                row = self.apply_move(board, move, current_player)
+                current_player = 'Y' if current_player == 'R' else 'R'
+
+                # Random playout phase
+                result = self.random_playout(board, current_player)
+
+                # Undo the move
                 self.undo_move(board, row, move)
 
-                # Update MCTS statistics
-                move_scores[move].wi += result
-                move_scores[move].ni += 1
-                move_scores[move].qi = move_scores[move].wi / move_scores[move].ni  # Average value
+                # Backpropagation
+                while current_node is not None:
+                    current_node.wi += result
+                    current_node.ni += 1
+                    current_node.qi = current_node.wi / current_node.ni
+                    if self.verbose:
+                        print(f"Updated values: wi: {current_node.wi}, ni: {current_node.ni}")
+                    current_node = current_node.parent
 
-                if self.verbose:
-                    print(f"Updated values for move {move}:")
-                    print(f"wi: {move_scores[move].wi}")
-                    print(f"ni: {move_scores[move].ni}")
-                    print(f"qi (average value): {move_scores[move].qi:.4f}")
-
-        # Choose the best move based on average value
+        # Choose the best move based on average value (qi)
         best_move = None
         best_value = float('-inf')
 
-        for move, node in move_scores.items():
+        for move, node in self.root.children.items():
             if node.ni > 0:
                 score = node.qi
             else:
@@ -124,12 +161,12 @@ class PMCGS:
                 best_move = move
 
         # Print detailed statistics if verbose
-        for move, node in move_scores.items():
+        for move, node in self.root.children.items():
             avg_value = node.qi if node.ni > 0 else "Null"
             if self.verbose:
-                print(f"Column {move + 1}: {avg_value}")
+                print(f"Column {move + 1}: {avg_value:.4f}")
 
         if self.verbose:
-            print(f"FINAL Move selected: {best_move}")
+            print(f"FINAL Move selected: {best_move + 1}")
 
         return best_move

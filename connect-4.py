@@ -7,9 +7,10 @@ import sys
 from uniform_random import UniformRandom
 from game_manager import GameManager
 from pmcgs import PMCGS
-# from uct import UCT
+
 
 def set_up(file_name):
+    """Sets up the board and reads the initial configuration."""
     board = []
     for i in range(6):
         row = ['O'] * 7
@@ -24,7 +25,9 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
+
 def main():
+    """Main execution function."""
     n = len(sys.argv)
     if n != 4:
         print("Incorrect number of arguments passed")
@@ -47,6 +50,7 @@ def main():
     
     algorithm, board, next_player = set_up(file_to_read)
 
+    # Uniform Random (UR)
     if algorithm == "UR" and iterations != 0:
         print("With UR algorithm, the last parameter must be 0")
         print()
@@ -56,17 +60,19 @@ def main():
         ur = UniformRandom()
         print(f"FINAL Move selected: {ur.next_move(board)}")
 
-    elif algorithm == "PMCGS":
+    # PMCGS or UCT algorithms
+    elif algorithm in ["PMCGS", "UCT"]:
+        use_uct = (algorithm == "UCT")
         pmcgs = PMCGS(verbose=(description == "Verbose"))
 
-        print("\nRunning PMCGS with:")
+        print(f"\nRunning {algorithm} with:")
         print(f"- Iterations: {iterations}")
         print(f"- Verbose: {pmcgs.verbose}")
         print()
 
-        # Select the next move
-        move = pmcgs.next_move(board, next_player, rollouts=iterations)
-        print(f"\nFINAL Move selected by PMCGS: {move}")
+        # Select the next move using UCT or PMCGS
+        move = pmcgs.next_move(board, next_player, rollouts=iterations, use_uct=use_uct)
+        print(f"\nFINAL Move selected by {algorithm}: {move}")
 
         # Apply the move and print the updated board
         row = pmcgs.apply_move(board, move, next_player)
