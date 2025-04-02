@@ -9,9 +9,9 @@ from game_manager import GameManager
 from pmcgs import PMCGS
 from simulator import Simulator
 
-
+#This method reads a file and returns the  algorithm, board and next player
+#used as initial configuration of the board
 def set_up(file_name):
-    """Sets up the board and reads the initial configuration."""
     board = []
     for i in range(6):
         row = ['O'] * 7
@@ -26,9 +26,15 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
-
-def main():
-    """Main execution function."""
+#Method is used to try a single move for a single algorithm
+#to run this uncoment it from the script
+#you will need to run this with three parameters
+#a text file that has algorithm on the first line,next player on the next line, and board set up
+#a description = verbose, brief or none / this will indicate how much details will be printed
+# and a number to indicate how many itterations to run
+# it will print the selected final move
+def ineterim_sumbission():
+    
     n = len(sys.argv)
     if n != 4:
         print("Incorrect number of arguments passed")
@@ -63,7 +69,7 @@ def main():
 
     # PMCGS or UCT algorithms
     elif algorithm in ["PMCGS", "UCT"]:
-        use_uct = (algorithm == "UCT")
+        
         pmcgs = PMCGS(verbose=(description == "Verbose"))
 
         print(f"\nRunning {algorithm} with:")
@@ -72,7 +78,7 @@ def main():
         print()
 
         # Select the next move using UCT or PMCGS
-        move = pmcgs.next_move(board, next_player, rollouts=iterations, use_uct=use_uct)
+        move = pmcgs.next_move(board, next_player, rollouts=iterations, use_uct=(algorithm == "UCT"))
         print(f"\nFINAL Move selected by {algorithm}: {move}")
 
         # Apply the move and print the updated board
@@ -82,10 +88,12 @@ def main():
         for row in board:
             print(" ".join(row))
 
-def main2():
+
+#method is used to run the tournament simulation
+def main():
     game1 = Simulator()
-    game1.game_simulation("UR", "UR", 0, 0)
+    game1.game_simulation("UCT", "PMCGS", 10, 10)
 # Using the special variable 
 # __name__
 if __name__ == "__main__":
-    main2()
+    main()

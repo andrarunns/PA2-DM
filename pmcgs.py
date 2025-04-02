@@ -3,7 +3,6 @@ import math
 from game_manager import GameManager
 
 class Node:
-    """MCTS Node to track wins, visits, and child nodes."""
     def __init__(self, parent=None, move=None):
         self.parent = parent
         self.move = move
@@ -13,8 +12,9 @@ class Node:
         self.qi = 0      # Value estimate (wi / ni)
         self.ucb = 0     # UCB value
 
+    #adda child if it does not exist
+    #display in the terminal of a new node 
     def add_child(self, move):
-        """Adds a child node if it doesn't exist."""
         if move not in self.children:
             self.children[move] = Node(self, move)
             print("NODE ADDED")
@@ -26,22 +26,30 @@ class PMCGS:
         self.root = None
         self.verbose = verbose
 
+    #replaces a spot on the board with the current player
+    #finds the lowest available spot of a column and places player letter
+    #returns the row where the move was made
     def apply_move(self, board, col, player):
-        """Applies a move in place and returns the row where it was made."""
         for row in range(5, -1, -1):
             if board[row][col] == 'O':
                 board[row][col] = player
                 return row
         return -1
 
+    #undoes a move
+    #restates the space as open "O"
     def undo_move(self, board, row, col):
-        """Undoes the move by resetting the cell to 'O'."""
         board[row][col] = 'O'
 
+    #finds all the cols that are not all filled
+    #returns a list with the cols that are available
     def get_legal_moves(self, board):
-        """Returns a list of legal moves (columns)."""
-        return [col for col in range(7) if board[0][col] == "O"]
+        legal = []
+        for col in range(7):
+            if board[0][col] == "O":
+                legal.append(col)
 
+        return legal
     def random_playout(self, board, player):
         """Simulates a random playout using apply/undo moves."""
         current_player = player

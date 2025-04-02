@@ -7,51 +7,62 @@ class Simulator:
 
     def __init__(self, verbose=False):
         self.verbose = verbose
+    
+    # Returns the appropriate class for the given algorithm
+    # used to initalize the competitors
+    def get_player(self, algorithm):
+        
+        if algorithm == "UR":
+            return UniformRandom()
+        elif algorithm == "PMCGS":
+            return PMCGS(verbose=False)
+        elif algorithm == "UCT":
+            return PMCGS(verbose=False)
 
+    # Takes in both players algorithms and their rollouts
+    # Simulates a game between both algorithms, taking turns placing a letter on the board
+    # Continues until the board is filled or a winner is found
     def game_simulation(self, alg1, alg2, rollouts1, rollouts2):
-        # Initialize empty board
+        
         board = []
-        for i in range(6):
+        for row in range(6):
             board.append(["O"] * 7)
         
         game_manager = GameManager(board)
 
-        # Set up algorithms
-        if alg1 == "UR":
-            red_player = UniformRandom()
-        else:
-            red_player = PMCGS(verbose=False)
-
-        if alg2 == "UR":
-            yellow_player = UniformRandom()
-        else:
-            yellow_player = PMCGS(verbose=False)
+        #set player objects
+        red_player = self.get_player(alg1)
+        yellow_player = self.get_player(alg2)
         
         curr_player = "R"
         move_count = 0
-        game_over = False
 
-        while not game_over:
+        while True:
             move_count += 1
 
+            #apply the next move depending on the algorithm and player
             if curr_player == "R":
-                move = red_player.next_move(board)
                 if alg1 == "UR":
+                    move = red_player.next_move(board)
                     row = self.apply_uniform_move(board, move, curr_player)
                 else:
+                    move = red_player.next_move(board, curr_player, rollouts=rollouts1, use_uct=(alg1 == "UCT"))
                     row = red_player.apply_move(board, move, curr_player)
-            elif curr_player == "Y":
-                move = yellow_player.next_move(board)
+            else:
                 if alg2 == "UR":
+                    move = yellow_player.next_move(board)
                     row = self.apply_uniform_move(board, move, curr_player)
                 else:
+                    move = yellow_player.next_move(board, curr_player, rollouts=rollouts2, use_uct=(alg2 == "UCT"))
                     row = yellow_player.apply_move(board, move, curr_player)
 
-            print("Current Board ---------------------")
-            for row in board:
-                print(row)
-            print("-----------------------------------")
             
+            print("Current Board ---------------------")
+            for r in board:
+                print(r)
+            print("-----------------------------------")
+
+            # Check for a winner
             winner = game_manager.check_winner(board)
 
             if winner == "R":
@@ -60,18 +71,9 @@ class Simulator:
             elif winner == "Y":
                 print("Yellow won")
                 return -1
-            elif move_count == 42:  # Board is full (draw)
+            elif winner == 0: 
                 print("Draw")
                 return 0
 
-            # Swap players
+            #a turn has completed so we switch players
             curr_player = "Y" if curr_player == "R" else "R"
-
-    def apply_uniform_move(self, board, move, curr):
-        """Directly apply a move for UniformRandom player."""
-        for row in range(5, -1, -1):  # Start from the bottom row
-            if board[row][move - 1] == 'O':  # Check if the column is available
-                board[row][move - 1] = curr  # Place the move for the current player
-                return row
-        return -1  # 
-

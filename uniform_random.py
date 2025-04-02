@@ -21,3 +21,12 @@ class UniformRandom:
         #choose one at random
         #return it
         return random.choice(moves)
+
+    #places current player on the board given their col
+    # returns -1 if the col is filled (illegal move)
+    def apply_uniform_move(self, board, move, curr):
+        for row in range(5, -1, -1): 
+            if board[row][move - 1] == 'O':  # Check if the column is available
+                board[row][move - 1] = curr 
+                return row
+        return -1  
