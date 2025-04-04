@@ -2,6 +2,7 @@ import random
 from game_manager import GameManager
 from pmcgs import PMCGS
 from uniform_random import UniformRandom
+import pandas as pd
 
 class Simulator:
 
@@ -57,10 +58,10 @@ class Simulator:
                     row = yellow_player.apply_move(board, move, curr_player)
 
             
-            print("Current Board ---------------------")
-            for r in board:
-                print(r)
-            print("-----------------------------------")
+            # print("Current Board ---------------------")
+            # for r in board:
+            #     print(r)
+            # print("-----------------------------------")
 
             # Check for a winner
             winner = game_manager.check_winner(board)
@@ -77,3 +78,25 @@ class Simulator:
 
             #a turn has completed so we switch players
             curr_player = "Y" if curr_player == "R" else "R"
+
+
+    def tournament(self, algorithms):
+        names = ["PMCGS (500)", "PMCGS (10000)", "UCT (500)", "UCT (10000)"]
+        results = {}
+        for name in names:
+            results[name] = []
+
+        for algorimo1 in algorithms:
+            for algorimo2 in algorithms:
+                if algorimo1 == algorimo2: 
+                    continue
+                wins = 0
+                for _ in range(1):
+                    winner = self.game_simulation(algorimo1[0], algorimo2[0], algorimo1[1], algorimo2[1])
+                    if winner == 1:
+                        wins += 1
+                win_rate = wins / 100
+                results[f"{algorimo1[0]} ({algorimo1[1]})"].append(win_rate)
+
+        df = pd.DataFrame(results, index=names)
+        return df

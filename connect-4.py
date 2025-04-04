@@ -91,9 +91,24 @@ def ineterim_sumbission():
 
 #method is used to run the tournament simulation
 def main():
-    game1 = Simulator()
-    game1.game_simulation("UCT", "PMCGS", 10, 10)
+    # game1 = Simulator()
+    # game1.game_simulation("UCT", "PMCGS", 10, 10)
 # Using the special variable 
+
+
+    algorithms = [
+        # ("UR", 0),
+        ("PMCGS", 500),
+        ("PMCGS", 10000),
+        ("UCT", 500),
+        ("UCT", 10000)
+    ]
+
+    game2 = Simulator()
+    results = game2.tournament(algorithms)
+    print(results)
+    # df = pd.DataFrame(results, index = [ 'PMCGS', 'PMCGS', 'UCT', 'UCT'])
+    # print(df)
 # __name__
 if __name__ == "__main__":
     main()
