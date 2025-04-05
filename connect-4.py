@@ -26,6 +26,12 @@ def set_up(file_name):
     
     return algorithm, board, next_player
 
+def empty_board():
+    board = []
+    for i in range(6):
+        row = ['O'] * 7
+        board.append(row)
+    return board
 #Method is used to try a single move for a single algorithm
 #to run this uncoment it from the script
 #you will need to run this with three parameters
@@ -99,9 +105,9 @@ def main():
     algorithms = [
         # ("UR", 0),
         ("PMCGS", 500),
-        ("PMCGS", 10000),
+        # ("PMCGS", 1000),
         ("UCT", 500),
-        ("UCT", 10000)
+        # ("UCT", 10000)
     ]
 
     game2 = Simulator()

@@ -2,14 +2,29 @@ class GameManager:
     def __init__(self, board):
         self.board = board
 
-    def apply_move(self, column, player):
-        row = 5  
-        while row >= 0:
-            if self.board[row][column] == 'O':  
-                self.board[row][column] = player  
-                break  
-            row -= 1 
-        return self.board
+    #replaces a spot on the board with the current player
+    #finds the lowest available spot of a column and places player letter
+    #returns the row where the move was made
+    def apply_move(self, col, player):
+        for row in range(5, -1, -1):
+            if self.board[row][col] == 'O':
+                self.board[row][col] = player
+                return row
+        return -1
+    
+    #undoes a move
+    #restates the space as open "O"
+    def undo_move(self, row, col):
+        self.board[row][col] = 'O'
+    
+    #finds all the cols that are not all filled
+    #returns a list with the cols that are available
+    def get_legal_moves(self):
+        legal = []
+        for col in range(7):
+            if self.board[0][col] == "O":
+                legal.append(col)
+        return legal
 
     def check_winner(self, board=None):
         # Use self.board if board is None

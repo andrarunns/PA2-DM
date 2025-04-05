@@ -10,7 +10,7 @@ class UniformRandom:
         moves = []
         for col in range(7):
             if board[0][col] == 'O':
-                moves.append(col + 1)
+                moves.append(col)
         return moves
 
     #uniform_random used to find the legal moves and return a uniform random strategy
@@ -24,9 +24,9 @@ class UniformRandom:
 
     #places current player on the board given their col
     # returns -1 if the col is filled (illegal move)
-    def apply_uniform_move(self, board, move, curr):
-        for row in range(5, -1, -1): 
-            if board[row][move - 1] == 'O':  # Check if the column is available
-                board[row][move - 1] = curr 
-                return row
-        return -1  
+    # def apply_uniform_move(self, board, move, curr):
+    #     for row in range(5, -1, -1): 
+    #         if board[row][move] == 'O':  # Check if the column is available
+    #             board[row][move] = curr 
+    #             return row
+    #     return -1  

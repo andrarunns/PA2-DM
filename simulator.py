@@ -23,7 +23,7 @@ class Simulator:
     # Takes in both players algorithms and their rollouts
     # Simulates a game between both algorithms, taking turns placing a letter on the board
     # Continues until the board is filled or a winner is found
-    def game_simulation(self, alg1, alg2, rollouts1, rollouts2):
+    def game_simulation(self, alg1, rollouts1, alg2, rollouts2):
         
         board = []
         for row in range(6):
@@ -44,18 +44,18 @@ class Simulator:
             #apply the next move depending on the algorithm and player
             if curr_player == "R":
                 if alg1 == "UR":
-                    move = red_player.next_move(board)
-                    row = self.apply_uniform_move(board, move, curr_player)
+                    move = red_player.next_move(game_manager.board)
+                    row = game_manager.apply_move(move, curr_player)
                 else:
-                    move = red_player.next_move(board, curr_player, rollouts=rollouts1, use_uct=(alg1 == "UCT"))
-                    row = red_player.apply_move(board, move, curr_player)
+                    move = red_player.next_move(game_manager, curr_player, rollouts=rollouts1)
+                    row = game_manager.apply_move(move, curr_player)
             else:
                 if alg2 == "UR":
-                    move = yellow_player.next_move(board)
-                    row = self.apply_uniform_move(board, move, curr_player)
+                    move = yellow_player.next_move(game_manager.board)
+                    row = game_manager.apply_move(move, curr_player)
                 else:
-                    move = yellow_player.next_move(board, curr_player, rollouts=rollouts2, use_uct=(alg2 == "UCT"))
-                    row = yellow_player.apply_move(board, move, curr_player)
+                    move = yellow_player.next_move(game_manager, curr_player, rollouts=rollouts2)
+                    row = game_manager.apply_move(move, curr_player)
 
             
             # print("Current Board ---------------------")
@@ -64,7 +64,7 @@ class Simulator:
             # print("-----------------------------------")
 
             # Check for a winner
-            winner = game_manager.check_winner(board)
+            winner = game_manager.check_winner()
 
             if winner == "R":
                 print("Red won")
@@ -81,7 +81,7 @@ class Simulator:
 
 
     def tournament(self, algorithms):
-        names = ["PMCGS (500)", "PMCGS (10000)", "UCT (500)", "UCT (10000)"]
+        names = ["PMCGS (500)", "UCT (500)"]
         results = {}
         for name in names:
             results[name] = []
@@ -91,11 +91,11 @@ class Simulator:
                 if algorimo1 == algorimo2: 
                     continue
                 wins = 0
-                for _ in range(1):
-                    winner = self.game_simulation(algorimo1[0], algorimo2[0], algorimo1[1], algorimo2[1])
+                for _ in range(5):
+                    winner = self.game_simulation(algorimo1[0], algorimo1[1], algorimo2[0], algorimo2[1])
                     if winner == 1:
                         wins += 1
-                win_rate = wins / 100
+                win_rate = wins 
                 results[f"{algorimo1[0]} ({algorimo1[1]})"].append(win_rate)
 
         df = pd.DataFrame(results, index=names)
