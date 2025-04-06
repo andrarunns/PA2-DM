@@ -79,24 +79,50 @@ class Simulator:
             #a turn has completed so we switch players
             curr_player = "Y" if curr_player == "R" else "R"
 
-
+    #method to create a tournament and evalua each of the algorthm with different values
+    #we pass a list with the algorthm we want to tets, and we create a list
     def tournament(self, algorithms):
-        names = ["PMCGS (500)", "UCT (500)"]
+        games = 5
+        names = []
+        for alg in algorithms:
+            names.append(f"{alg[0]} ({alg[1]})")
+        
+        #we create a hashmap with each of the algorithm as a key
+        #then we assign all the values to 0 of all the future evaluations
         results = {}
         for name in names:
-            results[name] = []
+            results[name] = {}
+            for x in names:
+                results[name][x] = 0
 
-        for algorimo1 in algorithms:
-            for algorimo2 in algorithms:
-                if algorimo1 == algorimo2: 
+        #we will traverse the algorithms that we will test
+        for i, algorimo1 in enumerate(algorithms):
+            for j, algorimo2 in enumerate(algorithms):
+                #we should compare the same algorithm so we skip and add a "-"
+                if i == j: 
+                    results[names[i]][names[j]] = "-"
                     continue
-                wins = 0
-                for _ in range(5):
-                    winner = self.game_simulation(algorimo1[0], algorimo1[1], algorimo2[0], algorimo2[1])
-                    if winner == 1:
-                        wins += 1
-                win_rate = wins 
-                results[f"{algorimo1[0]} ({algorimo1[1]})"].append(win_rate)
 
-        df = pd.DataFrame(results, index=names)
+                wins1, wins2 = 0, 0
+                for _ in range(games):
+                    #from game_simulation we return either 1 for red or -1 for yellow
+                    #we start playing as a algorhtm 1
+                    winner = self.game_simulation(algorimo1[0], algorimo1[1], algorimo2[0], algorimo2[1])
+                    #1 will be represt the first algorithm won 
+                    if winner == 1: 
+                        wins1 += 1
+                    #1 will be represt the seconf algorithm won 
+                    elif winner == -1:  
+                        wins2 += 1
+
+                #we have to diving by the numbers of games played
+                win_rate1 = wins1 / games
+                win_rate2 = wins2 / games
+
+                #after we detetermined the win we will just addd the value to to each different algotihm
+                results[names[i]][names[j]] = win_rate1
+                results[names[j]][names[i]] = win_rate2
+
+        #we will use padas to create the table to display the information
+        df = pd.DataFrame(results)
         return df

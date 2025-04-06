@@ -103,11 +103,11 @@ def main():
 
 
     algorithms = [
-        # ("UR", 0),
-        ("PMCGS", 500),
-        # ("PMCGS", 1000),
-        ("UCT", 500),
-        # ("UCT", 10000)
+        ("UR", 0),
+        ("PMCGS", 10),
+        ("PMCGS", 50),
+        ("UCT", 10),
+        ("UCT", 50)
     ]
 
     game2 = Simulator()
