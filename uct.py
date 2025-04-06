@@ -25,32 +25,8 @@ class UCT:
         self.root = None
         self.verbose = verbose
     
-    # #replaces a spot on the board with the current player
-    # #finds the lowest available spot of a column and places player letter
-    # #returns the row where the move was made
-    # def apply_move(self, board, col, player):
-    #     for row in range(5, -1, -1):
-    #         if board[row][col] == 'O':
-    #             board[row][col] = player
-    #             return row
-    #     return -1
-    
-    # #undoes a move
-    # #restates the space as open "O"
-    # def undo_move(self, board, row, col):
-    #     board[row][col] = 'O'
-
-    # #finds all the cols that are not all filled
-    # #returns a list with the cols that are available
-    # def get_legal_moves(self, board):
-    #     legal = []
-    #     for col in range(7):
-    #         if board[0][col] == "O":
-    #             legal.append(col)
-    #     return legal
-    
+    #this method will simulate the random plauout using apply move and undo moves
     def random_playout(self, board, player):
-        """Simulates a random playout using apply/undo moves."""
         current_player = player
         curr_manager = GameManager([row[:] for row in board])
         move_history = []

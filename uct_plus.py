@@ -25,9 +25,8 @@ class UCTPlus:
         self.root = None
         self.verbose = verbose
     
-    
+    #this method will simulate the random plauout using apply move and undo moves
     def random_playout(self, board, player):
-        """Simulates a random playout using apply/undo moves."""
         current_player = player
         curr_manager = GameManager([row[:] for row in board])
         move_history = []

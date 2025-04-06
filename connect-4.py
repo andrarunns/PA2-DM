@@ -9,6 +9,7 @@ from game_manager import GameManager
 from pmcgs import PMCGS
 from simulator import Simulator
 from uct_plus import UCTPlus
+from uct_plus_v2 import UCTPlus_v2
 
 #This method reads a file and returns the  algorithm, board and next player
 #used as initial configuration of the board

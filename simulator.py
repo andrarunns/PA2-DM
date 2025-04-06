@@ -5,6 +5,8 @@ from uniform_random import UniformRandom
 from uct import UCT
 import pandas as pd
 from uct_plus import UCTPlus
+from uct_plus_v2 import UCTPlus_v2
+
 class Simulator:
 
     def __init__(self, verbose=False):
@@ -22,6 +24,8 @@ class Simulator:
             return UCT(verbose=False)
         elif algorithm == "UCTPlus":
             return UCTPlus(verbose=False)
+        elif algorithm == "uct_plus_v2":
+            return UCTPlus_v2(verbose=False)
 
     # Takes in both players algorithms and their rollouts
     # Simulates a game between both algorithms, taking turns placing a letter on the board
