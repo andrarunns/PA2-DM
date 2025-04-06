@@ -56,8 +56,8 @@ class UCT:
 
             current_player = 'Y' if current_player == 'R' else 'R'
 
+    # estimate ucb value for each node and make the move of the node with the highest value
     def uct_select(self, node, exploration_factor=math.sqrt(2)):
-        """Selects a child node using UCT."""
         total_visits = sum(child.ni for child in node.children.values()) + 1
 
         best_ucb = float('-inf')
@@ -81,7 +81,6 @@ class UCT:
         return node.children[best_move]
 
     def next_move(self, game_manager, player, rollouts=500):
-        """Single next_move method for both PMCGS and UCT."""
         
         # Initialize the root node
         if self.root is None:

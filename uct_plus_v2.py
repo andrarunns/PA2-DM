@@ -56,8 +56,8 @@ class UCTPlus_v2:
 
             current_player = 'Y' if current_player == 'R' else 'R'
 
+    # estimate ucb value for each node and make the move of the node with the highest value
     def uct_select(self, node, exploration_factor=math.sqrt(2)):
-        """Selects a child node using UCT."""
         total_visits = sum(child.ni for child in node.children.values()) + 1
 
         best_ucb = float('-inf')

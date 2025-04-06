@@ -21,6 +21,7 @@ class Node:
         return self.children[move]
 
 
+# Class to impelement PMCGS algorithm
 class PMCGS:
     def __init__(self, verbose=False):
         self.root = None

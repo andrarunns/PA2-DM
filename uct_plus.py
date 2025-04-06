@@ -56,8 +56,8 @@ class UCTPlus:
 
             current_player = 'Y' if current_player == 'R' else 'R'
 
+    # estimate ucb value for each node and make the move of the node with the highest value
     def uct_select(self, node, exploration_factor=math.sqrt(2)):
-        """Selects a child node using UCT."""
         total_visits = sum(child.ni for child in node.children.values()) + 1
 
         best_ucb = float('-inf')
@@ -80,9 +80,8 @@ class UCTPlus:
 
         return node.children[best_move]
 
-
+    # if the opponent is 1 move away from winning, block it
     def find_blocking_move(self, game_manager, player):
-        """Check if the opponent has a winning move next turn and return the move to block it."""
         opponent = 'Y' if player == 'R' else 'R'
         legal_moves = game_manager.get_legal_moves()
 
@@ -99,14 +98,11 @@ class UCTPlus:
         return None
 
     def next_move(self, game_manager, player, rollouts=500):
-        """Single next_move method for both PMCGS and UCT."""
-
         # First check if we need to block opponent's winning move
         blocking_move = self.find_blocking_move(game_manager, player)
         if blocking_move is not None:
             print("BLOCKING MOVE SELECTED")
             return blocking_move
-
         
         # Initialize the root node
         if self.root is None:

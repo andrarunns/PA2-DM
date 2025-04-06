@@ -1,3 +1,5 @@
+# This class holds its own board and functions to manipulate it
+
 class GameManager:
     def __init__(self, board):
         self.board = board
