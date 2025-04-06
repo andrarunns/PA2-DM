@@ -2,8 +2,9 @@ import random
 from game_manager import GameManager
 from pmcgs import PMCGS
 from uniform_random import UniformRandom
+from uct import UCT
 import pandas as pd
-
+from uct_plus import UCTPlus
 class Simulator:
 
     def __init__(self, verbose=False):
@@ -18,7 +19,9 @@ class Simulator:
         elif algorithm == "PMCGS":
             return PMCGS(verbose=False)
         elif algorithm == "UCT":
-            return PMCGS(verbose=False)
+            return UCT(verbose=False)
+        elif algorithm == "UCTPlus":
+            return UCTPlus(verbose=False)
 
     # Takes in both players algorithms and their rollouts
     # Simulates a game between both algorithms, taking turns placing a letter on the board

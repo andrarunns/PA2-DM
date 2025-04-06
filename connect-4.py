@@ -8,6 +8,7 @@ from uniform_random import UniformRandom
 from game_manager import GameManager
 from pmcgs import PMCGS
 from simulator import Simulator
+from uct_plus import UCTPlus
 
 #This method reads a file and returns the  algorithm, board and next player
 #used as initial configuration of the board
@@ -110,9 +111,23 @@ def main():
         ("UCT", 50)
     ]
 
-    game2 = Simulator()
-    results = game2.tournament(algorithms)
-    print(results)
+    # game2 = Simulator()
+    # results = game2.tournament(algorithms)
+    # print(results)
+
+
+    game1 = Simulator()
+    uct_game_win = 0
+    uct_plus_game_win = 0
+    for i in range(10):
+        game = game1.game_simulation("UCT" ,10000, "UCTPlus", 10000)
+        if game == 1:
+            uct_game_win +=1
+        elif game == -1:
+            uct_plus_game_win +=1
+    
+    print("UCT Game win count", uct_game_win)
+    print("UCT Plus Game win count", uct_plus_game_win)
     # df = pd.DataFrame(results, index = [ 'PMCGS', 'PMCGS', 'UCT', 'UCT'])
     # print(df)
 # __name__
