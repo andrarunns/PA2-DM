@@ -34,6 +34,7 @@ def empty_board():
         row = ['O'] * 7
         board.append(row)
     return board
+
 #Method is used to try a single move for a single algorithm
 #to run this uncoment it from the script
 #you will need to run this with three parameters
@@ -102,24 +103,44 @@ def main():
 
     algorithms = [
         ("UR", 0),
-        ("PMCGS", 10),
-        ("PMCGS", 50),
-        ("UCT", 10),
-        ("UCT", 50)
+        ("PMCGS", 1000),
+        ("PMCGS", 500),
+        ("UCT", 1000),
+        ("UCT", 500)
     ]
 
-    game1 = Simulator()
-    uct_game_win = 0
-    uct_plus_game_win = 0
-    for i in range(10):
-        game = game1.game_simulation("UCT" ,10000, "UCTPlus", 10000)
-        if game == 1:
-            uct_game_win +=1
-        elif game == -1:
-            uct_plus_game_win +=1
+    # # tournament simulation
+    game = Simulator()
+    game.tournament(algorithms)
+
+    # game simulation between the original uct and the move block optimization
+    # game1 = Simulator()
+    # uct_game_win = 0
+    # uct_plus_game_win = 0
+    # for i in range(10):
+    #     game = game1.game_simulation("UCT" ,10000, "UCTPlus", 10000)
+    #     if game == 1:
+    #         uct_game_win +=1
+    #     elif game == -1:
+    #         uct_plus_game_win +=1
     
-    print("UCT Game win count", uct_game_win)
-    print("UCT Plus Game win count", uct_plus_game_win)
+    # print("UCT Game win count", uct_game_win)
+    # print("UCT Plus Game win count", uct_plus_game_win)
+
+
+    # # game simulation between original uct and the second optimization
+    # game2 = Simulator()
+    # uct_game_win = 0
+    # uct_plus_game_win = 0
+    # for i in range(10):
+    #     game = game2.game_simulation("UCT" ,10000, "uct_plus_v2", 10000)
+    #     if game == 1:
+    #         uct_game_win +=1
+    #     elif game == -1:
+    #         uct_plus_game_win +=1
+    
+    # print("UCT Game win count", uct_game_win)
+    # print("UCT Plus V2 Game win count", uct_plus_game_win)
 
 if __name__ == "__main__":
     main()

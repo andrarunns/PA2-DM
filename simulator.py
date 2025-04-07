@@ -89,7 +89,7 @@ class Simulator:
     #method to create a tournament and evalua each of the algorthm with different values
     #we pass a list with the algorthm we want to tets, and we create a list
     def tournament(self, algorithms):
-        games = 5
+        games = 10
         names = []
         for alg in algorithms:
             names.append(f"{alg[0]} ({alg[1]})")
